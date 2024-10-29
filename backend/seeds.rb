@@ -11,7 +11,8 @@ unless seeded
       t.string :last_name
       t.integer :age
       t.string :position
-      t.integer :department_id, index: true
+      t.references :department, foreign_key: true # This line ensures department_id is a foreign key
+      # t.integer :department_id, index: true
     end
 
     create_table :departments do |t|
@@ -45,6 +46,9 @@ unless seeded
     Department.create!(name: 'Operations'),
     Department.create!(name: 'IT')
   ]
+
+  # Reload departments from the database to ensure IDs are populated
+  departments = Department.all.to_a
 
   1000.times do
     Employee.create!(
