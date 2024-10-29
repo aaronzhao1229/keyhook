@@ -46,12 +46,12 @@ class EmployeeResource < ApplicationResource
 
   belongs_to :department
 
-  # filter :name, :string, single: true do
-  #   eq do |scope, value|
-  #     scope.where('LOWER(first_name) LIKE ?', "%#{value.downcase}%")
-  #          .or(scope.where('LOWER(last_name) LIKE ?', "%#{value.downcase}%"))
-  #   end
-  # end
+  filter :name, :string, single: true do
+    eq do |scope, value|
+      scope.where('LOWER(first_name) LIKE ?', "%#{value.downcase}%")
+           .or(scope.where('LOWER(last_name) LIKE ?', "%#{value.downcase}%"))
+    end
+  end
 
   # filter :department_id, :integer
 
