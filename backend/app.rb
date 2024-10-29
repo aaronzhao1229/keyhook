@@ -6,6 +6,12 @@ require 'sinatra/base'
 require 'graphiti'
 require 'graphiti/adapters/active_record'
 
+Graphiti.setup!
+# Graphiti.config.links_on_demand = true # Ensure pagination links are included in metadata
+Graphiti.config.pagination_links = true # Ensures pagination links are included
+
+
+
 class ApplicationResource < Graphiti::Resource
   self.abstract_class = true
   self.adapter = Graphiti::Adapters::ActiveRecord
@@ -24,6 +30,8 @@ class DepartmentResource < ApplicationResource
 end
 
 class EmployeeResource < ApplicationResource
+  paginate
+ 
   attribute :first_name, :string
   attribute :last_name, :string
   attribute :age, :integer
@@ -38,22 +46,23 @@ class EmployeeResource < ApplicationResource
 
   belongs_to :department
 
-  filter :name, :string, single: true do
-    eq do |scope, value|
-      scope.where('LOWER(first_name) LIKE ?', "%#{value.downcase}%")
-           .or(scope.where('LOWER(last_name) LIKE ?', "%#{value.downcase}%"))
-    end
-  end
+  # filter :name, :string, single: true do
+  #   eq do |scope, value|
+  #     scope.where('LOWER(first_name) LIKE ?', "%#{value.downcase}%")
+  #          .or(scope.where('LOWER(last_name) LIKE ?', "%#{value.downcase}%"))
+  #   end
+  # end
 
-  filter :department_id, :integer
+  # filter :department_id, :integer
 
   # add custom sorting and pagination
   sort :first_name, :last_name, :age, :position
-  paginate
+ 
+ 
   
 end
 
-Graphiti.setup!
+
 
 class EmployeeDirectoryApp < Sinatra::Application
   configure do
@@ -80,8 +89,41 @@ class EmployeeDirectoryApp < Sinatra::Application
 
   get '/api/v1/employees' do
     employees = EmployeeResource.all(params)
+
     employees.to_jsonapi
-   
+      # # Fetch paginated results with Kaminari using Graphiti resource
+      # employees_scope = EmployeeResource.all(params).data
+
+      # # Convert the Graphiti result back to an ActiveRecord relation
+      # active_record_scope = Employee.where(id: employees_scope.map(&:id))
+    
+      # # Apply pagination
+      # page_size = params.dig(:page, :size).to_i.nonzero? || 10
+      # page_number = params.dig(:page, :number).to_i.nonzero? || 1
+      # paginated_scope = active_record_scope.page(page_number).per(page_size)
+    
+      # # Get total count and page information based on the filtered scope
+      # total_count = active_record_scope.count
+      # total_pages = (total_count.to_f / page_size).ceil
+      # current_page = page_number
+    
+      # # Convert paginated_scope to Graphiti resource
+      # paginated_employees = EmployeeResource.all(params.merge(page: { size: page_size, number: page_number }))
+    
+      # # Render employees with pagination metadata
+      # response = paginated_employees.to_jsonapi
+    
+      # # Manually inject pagination metadata into the response
+      # response_hash = JSON.parse(response)
+      # response_hash["meta"] = {
+      #   total_count: total_count,
+      #   total_pages: total_pages,
+      #   current_page: current_page,
+      #   page_size: page_size
+      # }
+    
+      # # Return the updated response as JSON
+      # JSON.generate(response_hash)
   end
 
   get '/api/v1/employees/:id' do
