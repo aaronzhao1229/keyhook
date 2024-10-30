@@ -1,4 +1,5 @@
 import axios, { AxiosResponse, AxiosError } from 'axios'
+import { NewEmployee } from '../models/employee'
 
 axios.defaults.baseURL = 'http://localhost:4567/api/v1/'
 const responseBody = (response: AxiosResponse) => response.data
@@ -54,7 +55,7 @@ axios.interceptors.response.use(
 const requests = {
   get: (url: string, params?: URLSearchParams) =>
     axios.get(url, { params }).then(responseBody),
-  post: (url: string, body: {}) =>
+  post: (url: string, body: any) =>
     axios
       .post(url, body, {
         headers: {
@@ -66,7 +67,7 @@ const requests = {
 
 const Employees = {
   getEmployees: (params: URLSearchParams) => requests.get(`employees`, params),
-  createEmployee: (body: any) => requests.post(`employees`, body),
+  createEmployee: (body: NewEmployee) => requests.post(`employees`, body),
 }
 
 const Departments = {

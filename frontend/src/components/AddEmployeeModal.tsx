@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { DepartmentIdAndName } from '../models/department'
 import agent from '../api/agent'
+import { Employee, NewEmployee } from '../models/employee'
 
 interface AddEmployeeModalProps {
   departments: DepartmentIdAndName[]
@@ -30,7 +31,7 @@ export default function AddEmployeeModal({
   }
 
   const handleSubmit = async () => {
-    const employeeData = {
+    const employeeData: NewEmployee = {
       data: {
         type: 'employees', // specify the resource type
         attributes: {
@@ -45,7 +46,10 @@ export default function AddEmployeeModal({
     try {
       const newEmployee = await agent.Employees.createEmployee(employeeData)
       console.log(newEmployee)
-      setData((prevData: any) => [newEmployee.data.attributes, ...prevData])
+      setData((prevData: Employee[]) => [
+        newEmployee.data.attributes,
+        ...prevData,
+      ])
     } catch (error) {
       console.log(error)
     }

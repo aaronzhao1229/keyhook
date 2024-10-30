@@ -39,3 +39,16 @@ export interface EmployeeParams {
   sort?: string
   'page[number]'?: number
 }
+
+export interface NewEmployee {
+  data: {
+    type: string
+    attributes: {
+      first_name: string
+      last_name: string
+      age: number
+      position: string
+      department_id: number
+    }
+  }
+}
