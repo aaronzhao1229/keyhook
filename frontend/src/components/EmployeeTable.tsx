@@ -211,7 +211,7 @@ const EmployeeTable: React.FC = () => {
           />
         </div>
         {departments.length > 0 && (
-          <AddEmployeeModal departments={departments} />
+          <AddEmployeeModal departments={departments} fetchEmployees={fetchEmployees}/>
         )}
       </div>
 

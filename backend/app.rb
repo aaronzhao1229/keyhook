@@ -137,8 +137,8 @@ class EmployeeDirectoryApp < Sinatra::Application
 
   post '/api/v1/employees' do
      # Parse the request body to get the employee attributes
-  employee_params = JSON.parse(request.body.read)
-  # puts "employee_params: #{employee_params}"
+    employee_params = JSON.parse(request.body.read)
+   puts "employee_params: #{employee_params}"
 
    # Create a new Employee instance with the provided attributes
    employee = Employee.new(

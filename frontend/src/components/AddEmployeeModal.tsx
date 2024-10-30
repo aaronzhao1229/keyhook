@@ -1,11 +1,16 @@
 import { useState } from 'react'
 import { DepartmentIdAndName } from '../models/department'
+import agent from '../api/agent'
+
+interface AddEmployeeModalProps {
+  departments: DepartmentIdAndName[]
+  fetchEmployees: () => void
+}
 
 export default function AddEmployeeModal({
   departments,
-}: {
-  departments: DepartmentIdAndName[]
-}) {
+  fetchEmployees,
+}: AddEmployeeModalProps) {
   const [form, setForm] = useState({
     firstName: '',
     lastName: '',
@@ -24,9 +29,25 @@ export default function AddEmployeeModal({
     setForm({ ...form, department_id: e.target.value })
   }
 
-  const handleSubmit = () => {
-    console.log('submit')
-    console.log(form)
+  const handleSubmit = async () => {
+    const employeeData = {
+      data: {
+        type: 'employees', // specify the resource type
+        attributes: {
+          first_name: firstName,
+          last_name: lastName,
+          age: Number(age),
+          position: position,
+          department_id: Number(department_id),
+        },
+      },
+    }
+    try {
+      await agent.Employees.createEmployee(employeeData)
+      fetchEmployees({})
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (
