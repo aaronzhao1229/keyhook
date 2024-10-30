@@ -196,15 +196,20 @@ const EmployeeTable: React.FC = () => {
 
   return (
     <div className="px-16 py-8 w-full flex flex-col">
-      <div className="flex justify-left">
-        <Filter
-          employeePramas={employeePramas}
-          handleFilterChange={handleFilterChange}
-        />
-        <Dropdown
-          options={[{ id: '0', name: 'Filter by department' }, ...departments]}
-          handleSelectChange={handleSelectedDepartmentChange}
-        />
+      <div className="flex justify-between items-center mb-2">
+        <div className="flex justify-left">
+          <Filter
+            employeePramas={employeePramas}
+            handleFilterChange={handleFilterChange}
+          />
+          <Dropdown
+            options={[
+              { id: '0', name: 'Filter by department' },
+              ...departments,
+            ]}
+            handleSelectChange={handleSelectedDepartmentChange}
+          />
+        </div>
         {departments.length > 0 && (
           <AddEmployeeModal departments={departments} />
         )}
