@@ -11,7 +11,6 @@ Graphiti.setup!
 Graphiti.config.pagination_links = true # Ensures pagination links are included
 
 
-
 class ApplicationResource < Graphiti::Resource
   self.abstract_class = true
   self.adapter = Graphiti::Adapters::ActiveRecord
@@ -30,8 +29,11 @@ class DepartmentResource < ApplicationResource
 end
 
 class EmployeeResource < ApplicationResource
-  paginate
+  self.default_page_size = 20
+   # Enable metadata for pagination counts
+  # Disable default pagination by setting the default page size to nil
  
+
   attribute :first_name, :string
   attribute :last_name, :string
   attribute :age, :integer
@@ -57,8 +59,8 @@ class EmployeeResource < ApplicationResource
 
   # add custom sorting and pagination
   sort :first_name, :last_name, :age, :position
- 
- 
+#  paginate
+ # Override `records` method to add total count to metadata
   
 end
 
@@ -89,9 +91,11 @@ class EmployeeDirectoryApp < Sinatra::Application
 
   get '/api/v1/employees' do
     employees = EmployeeResource.all(params)
-
     employees.to_jsonapi
-      # # Fetch paginated results with Kaminari using Graphiti resource
+
+ 
+    
+      # Fetch paginated results with Kaminari using Graphiti resource
       # employees_scope = EmployeeResource.all(params).data
 
       # # Convert the Graphiti result back to an ActiveRecord relation

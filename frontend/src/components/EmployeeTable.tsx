@@ -18,7 +18,7 @@ import {
 } from '@heroicons/react/24/outline'
 import { Department, DepartmentIdAndName } from '../models/department'
 import { Dropdown } from './Dropdown'
-
+import { getPageNumber } from '../helper/helper'
 const EmployeeTable: React.FC = () => {
   const [data, setData] = useState<Employee[]>([])
   const [departments, setDepartments] = useState<DepartmentIdAndName[]>([])
@@ -30,8 +30,10 @@ const EmployeeTable: React.FC = () => {
     pageSize: 20,
   })
 
+  const [pageCount, setPageCount] = useState<number>(50)
+
   const [employeePramas, setEmployeePramas] = useState<EmployeeParams>({
-    include: 'department',
+    //   include: 'department',
   })
 
   // fetch employees data with params
@@ -39,9 +41,11 @@ const EmployeeTable: React.FC = () => {
     const axiosParams = getAxiosParams(params)
     return agent.Employees.getEmployees(axiosParams)
       .then((employeesData) => {
+        console.log(getPageNumber(employeesData.links.last))
         const employees = employeesData.data.map(
           (employee: apiResponse) => employee.attributes
         )
+        setPageCount(getPageNumber(employeesData.links.last))
         setData(employees)
         return employees
       })
@@ -75,12 +79,16 @@ const EmployeeTable: React.FC = () => {
     e: React.ChangeEvent<HTMLSelectElement>
   ) => {
     if (e.target.value !== '0') {
+      // reset the page index to 1
+      table.resetPageIndex()
       setEmployeePramas((prev) => ({
         ...prev,
+        'page[number]': 1,
         'filter[department_id]': e.target.value,
       }))
       fetchEmployees({
         ...employeePramas,
+        'page[number]': 1,
         'filter[department_id]': e.target.value,
       })
     } else {
@@ -147,13 +155,17 @@ const EmployeeTable: React.FC = () => {
 
   useEffect(() => {
     // sorting
+    // if sorting is applied
     if (table.getState().sorting.length > 0) {
+      // get the sorting id ready for the backend
       const sortId = table.getState().sorting[0].desc
         ? '-' + table.getState().sorting[0].id
         : table.getState().sorting[0].id
+
       setEmployeePramas((prev) => ({ ...prev, sort: sortId }))
       fetchEmployees({ ...employeePramas, sort: sortId })
     } else {
+      // if sorting is not applied, remove the sort param
       const { sort, ...newValues } = employeePramas
       setEmployeePramas(newValues)
       fetchEmployees(newValues)
@@ -245,8 +257,7 @@ const EmployeeTable: React.FC = () => {
       {/* pagination */}
       <div className="my-4">
         <p className="text-sm mb-2">
-          Page {table.getState().pagination.pageIndex + 1} of{' '}
-          {table.getPageCount()}
+          Page {table.getState().pagination.pageIndex + 1} of {pageCount}
         </p>
         <button
           className="mr-2 border border-slate-300 rounded hover:cursor-pointer hover:bg-slate-200"
@@ -258,7 +269,10 @@ const EmployeeTable: React.FC = () => {
         <button
           className="mr-2 border border-slate-300 rounded hover:cursor-pointer hover:bg-slate-200"
           onClick={table.nextPage}
-          disabled={!table.getCanNextPage()}
+          disabled={
+            !table.getCanNextPage() ||
+            table.getState().pagination.pageIndex + 1 === pageCount
+          }
         >
           <ChevronRightIcon width={20} />
         </button>

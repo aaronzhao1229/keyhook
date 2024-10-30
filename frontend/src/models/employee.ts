@@ -1,4 +1,3 @@
-
 export interface apiResponse {
   id: string
   type: string
@@ -27,17 +26,16 @@ export interface Links {
 }
 
 export interface Employee {
-  first_name: string;
-  last_name: string;
-  age: number;
-  position: string;
-  department_name: string;
+  first_name: string
+  last_name: string
+  age: number
+  position: string
+  department_name: string
 }
 
 export interface EmployeeParams {
   'filter[name]'?: string
   'filter[department_id]'?: string
-  'sort'?: string
+  sort?: string
   'page[number]'?: number
-  'include': string
 }
