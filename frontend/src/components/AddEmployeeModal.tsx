@@ -17,7 +17,7 @@ export default function AddEmployeeModal({
     lastName: '',
     age: '',
     position: '',
-    department_id: '0',
+    department_id: '1',
   })
 
   const { firstName, lastName, age, position, department_id } = form
@@ -43,9 +43,10 @@ export default function AddEmployeeModal({
         },
       },
     }
+
     try {
       const newEmployee = await agent.Employees.createEmployee(employeeData)
-      console.log(newEmployee)
+
       setData((prevData: Employee[]) => [
         newEmployee.data.attributes,
         ...prevData,
