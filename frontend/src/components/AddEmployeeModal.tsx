@@ -4,12 +4,12 @@ import agent from '../api/agent'
 
 interface AddEmployeeModalProps {
   departments: DepartmentIdAndName[]
-  fetchEmployees: () => void
+  setData: (data: any) => void
 }
 
 export default function AddEmployeeModal({
   departments,
-  fetchEmployees,
+  setData,
 }: AddEmployeeModalProps) {
   const [form, setForm] = useState({
     firstName: '',
@@ -43,8 +43,9 @@ export default function AddEmployeeModal({
       },
     }
     try {
-      await agent.Employees.createEmployee(employeeData)
-      fetchEmployees({})
+      const newEmployee = await agent.Employees.createEmployee(employeeData)
+      console.log(newEmployee)
+      setData((prevData: any) => [newEmployee.data.attributes, ...prevData])
     } catch (error) {
       console.log(error)
     }

@@ -56,6 +56,11 @@ class EmployeeResource < ApplicationResource
   end
 
   # filter :department_id, :integer
+  # filter :id, :string do
+  #   eq do |scope, value|
+  #     scope.where(id: value)
+  #   end
+  # end
 
   # add custom sorting and pagination
   sort :first_name, :last_name, :age, :position
@@ -92,42 +97,6 @@ class EmployeeDirectoryApp < Sinatra::Application
   get '/api/v1/employees' do
     employees = EmployeeResource.all(params)
     employees.to_jsonapi
-
- 
-    
-      # Fetch paginated results with Kaminari using Graphiti resource
-      # employees_scope = EmployeeResource.all(params).data
-
-      # # Convert the Graphiti result back to an ActiveRecord relation
-      # active_record_scope = Employee.where(id: employees_scope.map(&:id))
-    
-      # # Apply pagination
-      # page_size = params.dig(:page, :size).to_i.nonzero? || 10
-      # page_number = params.dig(:page, :number).to_i.nonzero? || 1
-      # paginated_scope = active_record_scope.page(page_number).per(page_size)
-    
-      # # Get total count and page information based on the filtered scope
-      # total_count = active_record_scope.count
-      # total_pages = (total_count.to_f / page_size).ceil
-      # current_page = page_number
-    
-      # # Convert paginated_scope to Graphiti resource
-      # paginated_employees = EmployeeResource.all(params.merge(page: { size: page_size, number: page_number }))
-    
-      # # Render employees with pagination metadata
-      # response = paginated_employees.to_jsonapi
-    
-      # # Manually inject pagination metadata into the response
-      # response_hash = JSON.parse(response)
-      # response_hash["meta"] = {
-      #   total_count: total_count,
-      #   total_pages: total_pages,
-      #   current_page: current_page,
-      #   page_size: page_size
-      # }
-    
-      # # Return the updated response as JSON
-      # JSON.generate(response_hash)
   end
 
   get '/api/v1/employees/:id' do
@@ -167,8 +136,18 @@ class EmployeeDirectoryApp < Sinatra::Application
   if employee.save
     # Respond with the created employee in JSON API format
     response.status = 201  # HTTP Created
-
+    new_employee = Employee.find_by(
+      first_name: employee.first_name,
+      last_name: employee.last_name, 
+      department_id: employee.department_id
+    )
+    # Use EmployeeResource to render the created employee with department relationship
+    new_employee_resource = EmployeeResource.find({ id: new_employee.id })
+    new_employee_resource.to_jsonapi
+    # employee_resource = EmployeeResource.find({ id: employee.id })
+    # employee_resource.to_jsonapi
     # Wrap the employee data in a JSON API response without using new
+
     # Directly return a hash in JSON API format
   else
     # Respond with errors if the save failed
