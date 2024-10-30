@@ -41,7 +41,6 @@ const EmployeeTable: React.FC = () => {
     const axiosParams = getAxiosParams(params)
     return agent.Employees.getEmployees(axiosParams)
       .then((employeesData) => {
-        console.log(getPageNumber(employeesData.links.last))
         const employees = employeesData.data.map(
           (employee: apiResponse) => employee.attributes
         )
@@ -260,14 +259,14 @@ const EmployeeTable: React.FC = () => {
           Page {table.getState().pagination.pageIndex + 1} of {pageCount}
         </p>
         <button
-          className="mr-2 border border-slate-300 rounded hover:cursor-pointer hover:bg-slate-200"
+          className="mr-2 border border-slate-300 rounded hover:cursor-pointer hover:bg-slate-200 disabled:opacity-50 disabled:cursor-not-allowed"
           onClick={table.previousPage}
           disabled={!table.getCanPreviousPage()}
         >
           <ChevronLeftIcon width={20} />
         </button>
         <button
-          className="mr-2 border border-slate-300 rounded hover:cursor-pointer hover:bg-slate-200"
+          className="mr-2 border border-slate-300 rounded hover:cursor-pointer hover:bg-slate-200 disabled:opacity-50 disabled:cursor-not-allowed"
           onClick={table.nextPage}
           disabled={
             !table.getCanNextPage() ||
