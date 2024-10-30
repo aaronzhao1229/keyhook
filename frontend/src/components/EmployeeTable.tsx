@@ -19,6 +19,8 @@ import {
 import { Department, DepartmentIdAndName } from '../models/department'
 import { Dropdown } from './Dropdown'
 import { getPageNumber } from '../helper/helper'
+import AddEmployeeModal from './AddEmployeeModal'
+
 const EmployeeTable: React.FC = () => {
   const [data, setData] = useState<Employee[]>([])
   const [departments, setDepartments] = useState<DepartmentIdAndName[]>([])
@@ -203,6 +205,7 @@ const EmployeeTable: React.FC = () => {
           options={[{ id: '0', name: 'Filter by department' }, ...departments]}
           handleSelectChange={handleSelectedDepartmentChange}
         />
+        <AddEmployeeModal />
       </div>
 
       <table className="table-auto border-collapse border border-slate-400">
