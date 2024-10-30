@@ -134,4 +134,32 @@ class EmployeeDirectoryApp < Sinatra::Application
     employees = EmployeeResource.find(params)
     employees.to_jsonapi
   end
+
+  post '/api/v1/employees' do
+     # Parse the request body to get the employee attributes
+  employee_params = JSON.parse(request.body.read)
+  # puts "employee_params: #{employee_params}"
+
+   # Create a new Employee instance with the provided attributes
+   employee = Employee.new(
+    first_name: employee_params.dig('data', 'attributes', 'first_name'),
+    last_name: employee_params.dig('data', 'attributes', 'last_name'),
+    age: employee_params.dig('data', 'attributes', 'age'),
+    position: employee_params.dig('data', 'attributes', 'position'),
+    department_id: employee_params.dig('data', 'attributes', 'department_id')
+  )
+  
+  puts "employee: #{employee}"
+  if employee.save
+    # Respond with the created employee in JSON API format
+    response.status = 201  # HTTP Created
+
+    # Wrap the employee data in a JSON API response without using new
+    # Directly return a hash in JSON API format
+  else
+    # Respond with errors if the save failed
+    response.status = 422  # HTTP Unprocessable Entity
+    { errors: employee.errors.full_messages }.to_json
+  end
+  end
 end
