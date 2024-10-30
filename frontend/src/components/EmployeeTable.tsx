@@ -101,7 +101,7 @@ const EmployeeTable: React.FC = () => {
   }
 
   useEffect(() => {
-    fetchEmployees({ include: 'department' })
+    fetchEmployees({})
     fetchDepartments()
     setLoading(false)
   }, [])
@@ -205,7 +205,9 @@ const EmployeeTable: React.FC = () => {
           options={[{ id: '0', name: 'Filter by department' }, ...departments]}
           handleSelectChange={handleSelectedDepartmentChange}
         />
-        <AddEmployeeModal />
+        {departments.length > 0 && (
+          <AddEmployeeModal departments={departments} />
+        )}
       </div>
 
       <table className="table-auto border-collapse border border-slate-400">
