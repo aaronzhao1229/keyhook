@@ -152,7 +152,8 @@ class EmployeeDirectoryApp < Sinatra::Application
     # Check for existing employee with the same first_name and last_name
     existing_employee = Employee.find_by(
       first_name: employee.first_name,
-      last_name: employee.last_name
+      last_name: employee.last_name, 
+      department_id: employee.department_id
     )
 
     puts "existing_employee: #{existing_employee}"
@@ -160,7 +161,7 @@ class EmployeeDirectoryApp < Sinatra::Application
     if existing_employee
       # Respond with an error if an employee with the same name already exists
       response.status = 409  # HTTP Conflict
-      return { errors: ["An employee with the name #{employee.first_name} #{employee.last_name} already exists."] }.to_json
+      return { errors: ["An employee with the name #{employee.first_name} #{employee.last_name} in this department already exists."] }.to_json
     end
  
   if employee.save
