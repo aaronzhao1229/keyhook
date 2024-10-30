@@ -149,7 +149,20 @@ class EmployeeDirectoryApp < Sinatra::Application
     department_id: employee_params.dig('data', 'attributes', 'department_id')
   )
   
-  puts "employee: #{employee}"
+    # Check for existing employee with the same first_name and last_name
+    existing_employee = Employee.find_by(
+      first_name: employee.first_name,
+      last_name: employee.last_name
+    )
+
+    puts "existing_employee: #{existing_employee}"
+  
+    if existing_employee
+      # Respond with an error if an employee with the same name already exists
+      response.status = 409  # HTTP Conflict
+      return { errors: ["An employee with the name #{employee.first_name} #{employee.last_name} already exists."] }.to_json
+    end
+ 
   if employee.save
     # Respond with the created employee in JSON API format
     response.status = 201  # HTTP Created
