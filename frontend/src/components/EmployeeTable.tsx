@@ -20,6 +20,7 @@ import { Department, DepartmentIdAndName } from '../models/department'
 import { Dropdown } from './Dropdown'
 import { getPageNumber } from '../helper/helper'
 import AddEmployeeModal from './AddEmployeeModal'
+import Employees from '../api/spraypaint'
 
 const EmployeeTable: React.FC = () => {
   const [data, setData] = useState<Employee[]>([])
@@ -40,19 +41,26 @@ const EmployeeTable: React.FC = () => {
 
   // fetch employees data with params
   const fetchEmployees = async (params: EmployeeParams) => {
-    const axiosParams = getAxiosParams(params)
-    return agent.Employees.getEmployees(axiosParams)
-      .then((employeesData) => {
-        const employees = employeesData.data.map(
-          (employee: apiResponse) => employee.attributes
-        )
-        setPageCount(getPageNumber(employeesData.links.last))
-        setData(employees)
-        return employees
-      })
-      .catch((error) => {
-        setError(error.message)
-      })
+    // const axiosParams = getAxiosParams(params)
+    // return agent.Employees.getEmployees(axiosParams)
+    //   .then((employeesData) => {
+    //     const employees = employeesData.data.map(
+    //       (employee: apiResponse) => employee.attributes
+    //     )
+    //     setPageCount(getPageNumber(employeesData.links.last))
+    //     setData(employees)
+    //     return employees
+    //   })
+    //   .catch((error) => {
+    //     setError(error.message)
+    //   })
+    const employeesData = await Employees.all()
+    console.log(employeesData)
+    const employees = employeesData.data.map((employee) => employee.attributes)
+    // setPageCount(getPageNumber(employeesData.links.last))
+    setPageCount(employeesData.data.length)
+    setData(employees)
+    return employees
   }
 
   const fetchDepartments = () => {
