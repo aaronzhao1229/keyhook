@@ -7,7 +7,7 @@ require 'graphiti'
 require 'graphiti/adapters/active_record'
 
 Graphiti.setup!
-# Graphiti.config.links_on_demand = true # Ensure pagination links are included in metadata
+
 Graphiti.config.pagination_links = true # Ensures pagination links are included
 
 

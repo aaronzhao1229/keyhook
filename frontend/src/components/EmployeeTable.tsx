@@ -101,9 +101,11 @@ const EmployeeTable: React.FC = () => {
   }
 
   useEffect(() => {
-    fetchEmployees({})
-    fetchDepartments()
-    setLoading(false)
+    const fetchData = async () => {
+      await Promise.all([fetchEmployees({}), fetchDepartments()])
+      setLoading(false)
+    }
+    fetchData()
   }, [])
 
   // define columns
