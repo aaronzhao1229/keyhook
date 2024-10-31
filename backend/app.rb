@@ -95,6 +95,7 @@ class EmployeeDirectoryApp < Sinatra::Application
   end
 
   get '/api/v1/employees' do
+    puts 'hey'
     employees = EmployeeResource.all(params)
     employees.to_jsonapi
   end
