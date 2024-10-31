@@ -30,10 +30,7 @@ end
 
 class EmployeeResource < ApplicationResource
   self.default_page_size = 20
-   # Enable metadata for pagination counts
-  # Disable default pagination by setting the default page size to nil
  
-
   attribute :first_name, :string
   attribute :last_name, :string
   attribute :age, :integer
@@ -54,13 +51,6 @@ class EmployeeResource < ApplicationResource
            .or(scope.where('LOWER(last_name) LIKE ?', "%#{value.downcase}%"))
     end
   end
-
-  # filter :department_id, :integer
-  # filter :id, :string do
-  #   eq do |scope, value|
-  #     scope.where(id: value)
-  #   end
-  # end
 
   # add custom sorting and pagination
   sort :first_name, :last_name, :age, :position
@@ -118,7 +108,7 @@ class EmployeeDirectoryApp < Sinatra::Application
       department_id: employee_params.dig('data', 'attributes', 'department_id')
     )
   
-    # Check for existing employee with the same first_name and last_name
+    # Check for existing employee with the same first_name and last_name in the same department
     existing_employee = Employee.find_by(
       first_name: employee.first_name,
       last_name: employee.last_name, 

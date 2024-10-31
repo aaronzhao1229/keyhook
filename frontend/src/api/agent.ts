@@ -6,15 +6,6 @@ const responseBody = (response: AxiosResponse) => response.data
 
 axios.interceptors.response.use(
   async (response) => {
-    // if (process.env.NODE_ENV === 'development') await sleep()
-    // const pagination = response.headers['pagination'] // need to be lower case even if there are upper cases in the header
-    // if (pagination) {
-    //   response.data = new PaginatedResponse(
-    //     response.data,
-    //     JSON.parse(pagination)
-    //   )
-    //   return response
-    // }
     return response
   },
   (error: AxiosError) => {
@@ -48,7 +39,7 @@ axios.interceptors.response.use(
         break
     }
 
-    return Promise.reject(error.response) // we are not able to catch and handle the responses in Axios interceptors. That's not what they say it's been designed for. Therefore, we still need to catch the errors inside our components as well. We still need to catch the error at the end of the errors journey which is inside the AboutPage for error tests
+    return Promise.reject(error.response)
   }
 )
 
